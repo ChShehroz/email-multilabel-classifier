@@ -21,14 +21,14 @@ def main():
     y_train_targets = targets.build_targets(y2_train, y3_train, y4_train)
     y_test_targets = targets.build_targets(y2_test, y3_test, y4_test)
 
-    bundle = Databundle.DataBundle(
+    bundle = Databundle.Databundle(
         X_train_vec,
         X_test_vec,
         y_train_targets,
         y_test_targets
     )
 
-    model_wrapper = model.ChainedMultiOutputModel()
+    model_wrapper = model.Chain_Model()
 
     model_wrapper.train(bundle)
 

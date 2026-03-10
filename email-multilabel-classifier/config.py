@@ -1,6 +1,6 @@
 # config.py
 
-DATA_PATH = "emails.csv"
+DATA_PATH = r"C:\Users\Admin\Desktop\react\Project-1\email-multilabel-classifier\email-multilabel-classifier\emails.csv"
 
 TEXT_COLUMN = "EmailText"
 TYPE2_COLUMN = "Type2"

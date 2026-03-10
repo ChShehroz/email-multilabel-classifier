@@ -1,13 +1,14 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 import config
+from sklearn.model_selection import train_test_split
+
 
 def load_data():
     df = pd.read_csv(config.DATA_PATH)
     return df
 
-
 def preprocess_data(df):
+
     df = df.dropna()
 
     X = df[config.TEXT_COLUMN]
@@ -18,10 +19,14 @@ def preprocess_data(df):
 
     return X, y2, y3, y4
 
+
 def split_data(X, y2, y3, y4):
 
     return train_test_split(
-        X, y2, y3, y4,
+        X,
+        y2,
+        y3,
+        y4,
         test_size=config.TEST_SIZE,
         random_state=config.RANDOM_STATE
     )
