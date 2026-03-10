@@ -1,7 +1,7 @@
 import preprocessing
 import feature_extraction
 import targets
-import data_bundle
+import dataBundle
 import model
 import evaluator
 
@@ -21,7 +21,7 @@ def main():
     y_train_targets = targets.build_targets(y2_train, y3_train, y4_train)
     y_test_targets = targets.build_targets(y2_test, y3_test, y4_test)
 
-    bundle = databundle.DataBundle(
+    bundle = dataBundle.DataBundle(
         X_train_vec,
         X_test_vec,
         y_train_targets,
