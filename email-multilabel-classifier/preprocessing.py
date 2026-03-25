@@ -15,10 +15,21 @@ def _normalize_columns(df):
     df = df.copy()
     df.columns = [str(c).strip() for c in df.columns]
 
+    # rename old column names to new common names
+    rename_map = {
+        "Type2": "Type 2",
+        "Type3": "Type 3",
+        "Type4": "Type 4",
+        "EmailText": "EmailText",
+        "Interaction content": "Interaction content",
+        "Ticket Summary": "Ticket Summary",
+    }
+    df = df.rename(columns=rename_map)
+
     required = [config.TYPE2_COLUMN, config.TYPE3_COLUMN, config.TYPE4_COLUMN]
     for col in required:
         if col not in df.columns:
-            raise ValueError(f"Missing required column: {col}")
+            raise ValueError(f"Missing required column: {col}. Found columns: {list(df.columns)}")
 
     df[config.TEXT_COLUMN] = df.apply(_first_available_text, axis=1)
 
@@ -73,15 +84,24 @@ def preprocess_data(df):
     df = df.dropna(subset=[config.TEXT_COLUMN, config.TYPE2_COLUMN, config.TYPE3_COLUMN, config.TYPE4_COLUMN]).copy()
     df, removed = remove_rare_classes(df)
 
+    if config.TYPE1_COLUMN in df.columns:
+        df[config.TYPE1_COLUMN] = df[config.TYPE1_COLUMN].fillna("Unknown").astype(str).str.strip()
+
     X = df[config.TEXT_COLUMN]
     y2 = df[config.TYPE2_COLUMN]
     y3 = df[config.TYPE3_COLUMN]
     y4 = df[config.TYPE4_COLUMN]
+
+    type1_values = []
+    if config.TYPE1_COLUMN in df.columns:
+        type1_values = sorted(df[config.TYPE1_COLUMN].unique().tolist())
+
     metadata = {
         "row_count": len(df),
         "removed_rare_classes": removed,
-        "type1_unique": sorted(df[config.TYPE1_COLUMN].unique().tolist()) if config.TYPE1_COLUMN in df.columns else []
+        "type1_unique": type1_values
     }
+
     return X, y2, y3, y4, metadata
 
 
