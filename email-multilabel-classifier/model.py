@@ -1,33 +1,36 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
+import config
 
 
 class Chain_Model:
-
     def __init__(self):
         self.models = {
-            "t2": RandomForestClassifier(),
-            "t23": RandomForestClassifier(),
-            "t234": RandomForestClassifier()
+            "t2": RandomForestClassifier(
+                n_estimators=config.N_ESTIMATORS,
+                random_state=config.MODEL_RANDOM_STATE
+            ),
+            "t23": RandomForestClassifier(
+                n_estimators=config.N_ESTIMATORS,
+                random_state=config.MODEL_RANDOM_STATE
+            ),
+            "t234": RandomForestClassifier(
+                n_estimators=config.N_ESTIMATORS,
+                random_state=config.MODEL_RANDOM_STATE
+            )
         }
         self.encoders = {
-            "t2": LabelEncoder(),
-            "t23": LabelEncoder(),
-            "t234": LabelEncoder()
+            key: LabelEncoder() for key in self.models
         }
 
     def train(self, bundle):
         for key in self.models:
-            y = bundle.y_train[key]
-            y_encoded = self.encoders[key].fit_transform(y)
+            y_encoded = self.encoders[key].fit_transform(bundle.y_train[key])
             self.models[key].fit(bundle.X_train, y_encoded)
-            
-    def predict(self, X):
-        pred = {}
 
+    def predict(self, X):
+        predictions = {}
         for key in self.models:
             y_pred = self.models[key].predict(X)
-            y_pred = self.encoders[key].inverse_transform(y_pred)
-            pred[key] = y_pred
-
-        return pred
+            predictions[key] = self.encoders[key].inverse_transform(y_pred)
+        return predictions
